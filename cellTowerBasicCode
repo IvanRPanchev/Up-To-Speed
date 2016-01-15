@@ -1,0 +1,159 @@
+// JAVA CODE 
+
+package com.example.electr0.firststeps;
+
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.telephony.CellInfo;
+import android.telephony.NeighboringCellInfo;
+import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
+import android.widget.TextView;
+
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+
+    private TextView cellIDview;
+    private TextView LACview;
+    private TextView MCCview;
+    private TextView oprName;
+    private TextView neighbours;
+    String neighboursInfo = "";
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        cellIDview = (TextView)findViewById(R.id.cellidTextView);
+        LACview = (TextView)findViewById(R.id.lacTextView);
+        MCCview = (TextView)findViewById(R.id.mccTextView);
+        oprName = (TextView)findViewById(R.id.oprTextView);
+        neighbours = (TextView)findViewById(R.id.neighboursTextView);
+
+
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        GsmCellLocation cellLocation = (GsmCellLocation) telephonyManager.getCellLocation();
+
+        // Cell Id, LAC
+        int cellid = cellLocation.getCid();
+        int lac = cellLocation.getLac();
+
+        List<CellInfo> closeTowers = telephonyManager.getAllCellInfo();
+
+
+        // MCC
+        String MCC = telephonyManager.getNetworkOperator();
+        int mcc = Integer.parseInt(MCC.substring(0, 3));
+
+        // Operator name
+        String operatoprName = telephonyManager.getNetworkOperatorName();
+
+        cellIDview.setText(String.valueOf(cellid));
+        LACview.setText(String.valueOf(lac));
+        MCCview.setText(String.valueOf(mcc));
+        oprName.setText(operatoprName);
+
+
+        for(int i = 0 ; i<closeTowers.size(); i++){
+
+           neighboursInfo = neighboursInfo + closeTowers.get(i).toString();
+
+
+        }
+
+
+        neighbours.setText(neighboursInfo);
+
+
+
+    }
+}
+
+
+//MAIN XML CODE 
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.electr0.firststeps.MainActivity">
+
+    <TextView
+        android:id="@+id/cellidTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+    <TextView
+        android:id="@+id/lacTextView"
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+    <TextView
+        android:id="@+id/mccTextView"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+    <TextView
+        android:id="@+id/oprTextView"
+        android:layout_marginTop="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+    <TextView
+        android:id="@+id/neighboursTextView"
+        android:layout_marginTop="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+
+
+</RelativeLayout>
+
+
+
+
+//MAINFEST CODE 
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.electr0.firststeps">
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
+
+
+
+
