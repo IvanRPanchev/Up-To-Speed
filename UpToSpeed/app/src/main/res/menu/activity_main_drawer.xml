@@ -23,13 +23,13 @@
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_creator1"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="BigNothing" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_creator2"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="IvanRPanchev" />
         </menu>
     </item>
 

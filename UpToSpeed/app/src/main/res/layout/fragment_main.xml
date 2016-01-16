@@ -6,8 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.myaccount.uptospeed.MainActivityFragment"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.example.myaccount.uptospeed.MainFragment">
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,15 +17,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="28sp"
-            android:text="Hello, this is our Personal Assistant demo app!" >
+            android:text="Hello, this is our Personal Assistant demo app!"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
 
         </TextView>
         <TextView android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="28sp"
-            android:text="Select an activity!"
-            android:layout_above="@+id/social_button"
+            android:text="The buttons dont work!"
+            android:paddingBottom="16dp"
+            android:layout_above="@+id/social"
             android:layout_centerHorizontal="true">
 
         </TextView>
@@ -38,7 +40,7 @@
             android:textColor="#fff"
             android:background="@color/colorPrimary"
             android:textSize="20sp"
-            android:id="@+id/social_button"
+            android:id="@+id/social"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
         <Button
@@ -50,7 +52,7 @@
             android:background="@color/colorPrimary"
             android:textSize="20sp"
             android:id="@+id/tasks_button"
-            android:layout_alignTop="@+id/social_button"
+            android:layout_below="@+id/text2"
             android:layout_alignParentStart="true" />
         <Button
             android:layout_width="wrap_content"
@@ -61,8 +63,9 @@
             android:background="@color/colorPrimary"
             android:textSize="20sp"
             android:id="@+id/info_button"
-            android:layout_alignTop="@+id/social_button"
+            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true" />
+
     </RelativeLayout>
 
 </RelativeLayout>
