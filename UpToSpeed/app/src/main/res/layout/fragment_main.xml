@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="28sp"
+            android:paddingTop="36dp"
             android:text="Hello, this is our Personal Assistant demo app!"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true">
@@ -26,9 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="28sp"
-            android:text="The buttons dont work!"
+            android:text="What would you like to see?"
             android:paddingBottom="16dp"
-            android:layout_above="@+id/social"
+            android:layout_above="@+id/social_button"
             android:layout_centerHorizontal="true">
 
         </TextView>
@@ -40,7 +41,7 @@
             android:textColor="#fff"
             android:background="@color/colorPrimary"
             android:textSize="20sp"
-            android:id="@+id/social"
+            android:id="@+id/social_button"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
         <Button
@@ -52,7 +53,7 @@
             android:background="@color/colorPrimary"
             android:textSize="20sp"
             android:id="@+id/tasks_button"
-            android:layout_below="@+id/text2"
+            android:layout_alignTop="@+id/social_button"
             android:layout_alignParentStart="true" />
         <Button
             android:layout_width="wrap_content"

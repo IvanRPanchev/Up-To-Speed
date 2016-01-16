@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -31,12 +32,28 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+     //  final Button btnSocial = (Button) findViewById(R.id.social);
+     //  btnSocial.setOnClickListener(new View.OnClickListener() {
+     //      @Override
+     //      public void onClick(View v) {
+     //          btnSocial.setText("You Clicked Me");
+
+     //          Toast t = Toast.makeText(MainActivity.this,"Button Clicked!",Toast.LENGTH_LONG);
+     //          t.show();
+     //      }
+     //  });
 
         btnInfo = (Button) findViewById(R.id.info_button);
         btnTasks = (Button) findViewById(R.id.tasks_button);
-        btnSocial = (Button) findViewById(R.id.social);
+      //Button btnSocial = (Button) findViewById(R.id.social);
 
-
+      //btnSocial.setOnClickListener(new View.OnClickListener() {
+      //    @Override
+      //    public void onClick(View v) {
+      //        Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+      //                .setAction("Action", null).show();
+      //    }
+      //});
 
 
         //Set the fragment initially
