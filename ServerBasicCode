@@ -1,0 +1,214 @@
+// Main Class 
+
+import java.net.ServerSocket;
+import java.net.Socket;
+
+
+public class SpeedServer {
+
+    public static void main(String[] args) {
+
+        try
+        {
+            ServerSocket sock = new ServerSocket(5500);
+            System.out.println("Socket 5500 is open");
+
+            for (int i=0 ; i<50 ; i++)
+            {
+                System.out.println("Waiting client");
+                Socket newsock = sock.accept();
+
+                System.out.println("Creating thread ...");
+
+                Thread t = new ThreadHandler(newsock);
+
+                System.out.println("Thread running....");
+                t.start();
+
+            }
+
+            System.out.println("Closing server...");
+
+            if(sock != null) sock.close();
+
+        }
+        catch (Exception e)
+        {
+            System.out.println("IO error " + e);
+
+        }
+
+        System.out.println("End successful!");
+    }
+}
+
+
+// thread class
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class ThreadHandler extends Thread {
+
+    Socket newsock;
+    BufferedReader inp;
+    PrintWriter outp;
+
+    static HashMap<String, ArrayList<String>> clientsData = new HashMap<String, ArrayList<String>>();  // basic storage for clients data
+
+    ArrayList<String> tmpPhoneNums = new ArrayList<String>();
+
+    ThreadHandler(Socket s) {
+
+        newsock = s;
+
+    }
+
+    public void run() {
+
+        try {
+
+            boolean more_data = true;
+            String line; //input data
+            String clientNum;
+            String clientTowerLoc;
+
+
+            outp = new PrintWriter(newsock.getOutputStream(), true);
+            inp = new BufferedReader(new InputStreamReader(newsock.getInputStream()));
+
+
+            //Start conversation
+            System.out.println("Clients data : " + clientsData.toString());
+
+            while (more_data) {
+
+                line = inp.readLine(); // waiting to take number
+
+
+                if (line == null) {  // there is no data from client
+
+                    System.out.println("line = null \n");
+                    more_data = false;
+
+                } else {        // we have to handle the data
+
+                    System.out.println(line);    //check data in console
+
+                    clientNum = line;  // save number
+
+                    line = inp.readLine();  // waiting to take location
+
+                    System.out.println(line);    //check data in console
+
+                    clientTowerLoc = line;  // save location
+
+
+                    //time to save data together
+
+
+                    if(clientsData.isEmpty()){                // add data for first time
+
+                        tmpPhoneNums.add(clientNum);
+                        clientsData.put(clientTowerLoc, tmpPhoneNums);
+
+                        System.out.println("add first time data");
+
+                    }else{
+
+                        if(clientsData.containsKey(clientTowerLoc)){                   //if we have data about tower
+
+                            if(!clientsData.get(clientTowerLoc).contains(clientNum)){
+
+                                clientsData.get(clientTowerLoc).add(clientNum);      //just add new num if it's not already there
+                                System.out.println("add new number");
+                            }
+
+                        }else{                                                    //if we have no data just add new key-value
+
+                            tmpPhoneNums = new ArrayList<String>();
+                            tmpPhoneNums.add(clientNum);
+                            clientsData.put(clientTowerLoc,tmpPhoneNums);
+
+                            System.out.println("add new key-value");
+
+                        }
+
+                    }
+
+
+                    System.out.println("Clients data : " + clientsData.toString());
+
+
+                    //time to send some data
+
+                    if(clientsData.get(clientTowerLoc).size()>1){     //if there is more than 1 num con. to tower
+
+                        tmpPhoneNums = new ArrayList<String>();
+
+                        for(int i = 0 ; i < clientsData.get(clientTowerLoc).size() ; i++){
+
+                            if(!clientsData.get(clientTowerLoc).get(i).equals(clientNum)){   //we don't want to send the same number
+
+                                tmpPhoneNums.add(clientsData.get(clientTowerLoc).get(i));   //numbers to send
+
+                                System.out.println("numbers to send are ready");
+
+                            }
+
+                        }
+
+                        //our numbers are ready to send
+
+                        outp.println("Friends list around you: ");
+
+                        for(int i = 0 ; i < tmpPhoneNums.size() ; i++){
+
+                            outp.println("Friend " + i+1 + " : " + tmpPhoneNums.get(i));
+
+                        }
+                        outp.println("end");
+                        outp.flush();
+
+                        System.out.println("numbers are going to client");
+
+
+                    }else{
+
+                        outp.println("There is nobody around you");
+                        outp.println("end");
+                        outp.flush();
+
+
+                        System.out.println("no numbers for client");
+
+                    }
+
+
+                }
+
+
+            }
+
+
+            if (outp != null) outp.close();
+            if (inp != null) inp.close();
+            newsock.close();
+            System.out.println("Disconnected from client number");
+
+        } catch (Exception e) {
+
+            System.out.println("IO error " + e);
+
+        }
+
+    }
+
+
+}
+
+
