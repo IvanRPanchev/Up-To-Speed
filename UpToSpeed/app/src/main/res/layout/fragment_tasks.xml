@@ -1,15 +1,87 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.myaccount.uptospeed.TasksFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="48dp"
+    <TextView android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textSize="28sp"
-        android:text="This is our Tasks Fragment!" />
+        android:paddingTop="60dp"
 
-</FrameLayout>
+        android:text="Tasks and reminders"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+    </TextView>
+
+    <ToggleButton
+        android:id="@+id/water"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textColor="#fff"
+        android:background="@color/colorPrimary"
+        android:textSize="20sp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="220dp"
+        android:text="Button1" />
+
+    <ToggleButton
+        android:id="@+id/groceries"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/water"
+        android:textColor="#fff"
+        android:background="@color/colorPrimary"
+        android:textSize="20sp"
+        android:layout_below="@+id/water"
+        android:layout_marginTop="12dp"
+        android:text="Button2" />
+
+    <Button
+        android:id="@+id/food"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:background="@color/colorPrimary"
+        android:textSize="20sp"
+        android:layout_marginTop="12dp"
+        android:text="food"
+        android:longClickable="true"
+        android:layout_below="@+id/groceries"
+        android:layout_alignStart="@+id/groceries" />
+
+    <TextView
+        android:padding="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:text="Water reminder"
+        android:id="@+id/textView"
+        android:layout_alignTop="@+id/water"
+        android:layout_toEndOf="@+id/water" />
+
+    <TextView
+        android:padding="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:text="Groceries reminder"
+        android:id="@+id/textView2"
+        android:layout_alignTop="@+id/groceries"
+        android:layout_toEndOf="@+id/groceries" />
+
+    <TextView
+        android:padding="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:text="Hungry?"
+        android:id="@+id/textView3"
+        android:layout_alignTop="@+id/food"
+        android:layout_alignStart="@+id/textView2" />
+
+</RelativeLayout>
