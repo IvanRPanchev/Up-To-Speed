@@ -1,5 +1,7 @@
 package com.example.myaccount.uptospeed;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private PendingIntent pendingIntent;
     NavigationView navigationView = null;
     Toolbar toolbar = null;
     Button btnSocial, btnInfo, btnTasks;
@@ -32,30 +35,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-     //  final Button btnSocial = (Button) findViewById(R.id.social);
-     //  btnSocial.setOnClickListener(new View.OnClickListener() {
-     //      @Override
-     //      public void onClick(View v) {
-     //          btnSocial.setText("You Clicked Me");
-
-     //          Toast t = Toast.makeText(MainActivity.this,"Button Clicked!",Toast.LENGTH_LONG);
-     //          t.show();
-     //      }
-     //  });
 
         btnInfo = (Button) findViewById(R.id.info_button);
         btnTasks = (Button) findViewById(R.id.tasks_button);
-      //Button btnSocial = (Button) findViewById(R.id.social);
-
-      //btnSocial.setOnClickListener(new View.OnClickListener() {
-      //    @Override
-      //    public void onClick(View v) {
-      //        Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-      //                .setAction("Action", null).show();
-      //    }
-      //});
-
-
+    
         //Set the fragment initially
         MainFragment fragment = new MainFragment();
         android.support.v4.app.FragmentTransaction fragmentTransaction =
@@ -160,5 +143,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void alarmMethod(){
+        Intent myIntent = new Intent(this,NotificationService.class);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        pendingIntent = PendingIntent.getService(this, 0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(), 10000, pendingIntent);
+        Toast.makeText(MainActivity.this, "Reminder Set", Toast.LENGTH_LONG).show();
+
     }
 }

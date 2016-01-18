@@ -66,6 +66,7 @@ public class TasksFragment extends Fragment {
         waterToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    ((MainActivity)getActivity()).alarmMethod();
                     Snackbar.make(buttonView, "You have enabled hourly water reminder!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 } else {
