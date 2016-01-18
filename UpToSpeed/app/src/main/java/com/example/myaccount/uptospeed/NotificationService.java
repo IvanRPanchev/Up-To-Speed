@@ -4,16 +4,20 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 
 /**
  * Created by MyAccount on 18.1.2016 г..
  */
 public class NotificationService extends Service {
+
+    Uri creator1 = Uri.parse("https://github.com/BigNothing");
 
     @Nullable
     @Override
@@ -23,21 +27,25 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate(){
-        Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setAutoCancel(true)
+                        .setSmallIcon(R.drawable.ai_icon)
+                        .setContentTitle("This is our lead dev!");
 
-        NotificationManager mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        Intent intent1 = new Intent(this.getApplicationContext(), MainActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent1, 0);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Notification mNotify = new Notification.Builder(this)
-                .setContentTitle("Log Steps!")
-                .setContentText("Log your steps for today")
-                .setSmallIcon(R.drawable.ai_icon)
-                .setContentIntent(pIntent)
-                .setSound(sound)
-                .addAction(0, "Load Website", pIntent)
-                .build();
+        // pending implicit intent to view url
+        Intent resultIntent = new Intent(Intent.ACTION_VIEW);
+        resultIntent.setData(creator1);
 
-        mNM.notify(1, mNotify);
+        PendingIntent pending = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notificationBuilder.setContentIntent(pending);
+
+        // using the same tag and Id causes the new notification to replace an existing one
+
+        mNotificationManager.notify(String.valueOf(System.currentTimeMillis()), 1000, notificationBuilder.build());
+
     }
 }

@@ -6,7 +6,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.myaccount.uptospeed.MainFragment">
+    tools:context="com.example.myaccount.uptospeed.MainFragment"
+    android:background="@drawable/android_background_design_pictures">
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,7 +19,8 @@
             android:layout_height="wrap_content"
             android:textSize="28sp"
             android:paddingTop="60dp"
-            android:text="Hello, this is our Personal Assistant demo app!"
+            android:textColor="#FFFFFF"
+            android:text="Welcome to Up To Speed"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true">
 
@@ -26,6 +28,7 @@
         <TextView android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
             android:textSize="28sp"
             android:text="What would you like to see?"
             android:paddingBottom="16dp"

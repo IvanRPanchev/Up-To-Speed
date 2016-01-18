@@ -2,13 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.myaccount.uptospeed.TasksFragment">
+    tools:context="com.example.myaccount.uptospeed.TasksFragment"
+    android:background="@drawable/android_background_design_pictures">
 
     <TextView android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="28sp"
         android:paddingTop="60dp"
+        android:textColor="#FFFFFF"
 
         android:text="Tasks and reminders"
         android:layout_alignParentTop="true"
@@ -59,6 +61,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="28sp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#FFFFFF"
         android:text="Water reminder"
         android:id="@+id/textView"
         android:layout_alignTop="@+id/water"
@@ -69,8 +73,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="28sp"
+        android:textColor="#FFFFFF"
         android:text="Groceries reminder"
         android:id="@+id/textView2"
+        android:layout_marginLeft="20dp"
         android:layout_alignTop="@+id/groceries"
         android:layout_toEndOf="@+id/groceries" />
 
@@ -78,6 +84,8 @@
         android:padding="6dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="10dp"
         android:textSize="28sp"
         android:text="Hungry?"
         android:id="@+id/textView3"

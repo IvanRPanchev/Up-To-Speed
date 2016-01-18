@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.myaccount.uptospeed.InfoFragment">
+    tools:context="com.example.myaccount.uptospeed.InfoFragment"
+    android:background="@drawable/android_background_design_pictures">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -10,6 +11,6 @@
         android:layout_height="match_parent"
         android:paddingTop="48dp"
         android:textSize="28sp"
-        android:text="This is our Quick Info fragment!" />
+        android:text="" />
 
 </FrameLayout>

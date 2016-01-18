@@ -1,15 +1,19 @@
 package com.example.myaccount.uptospeed;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 
@@ -51,12 +55,48 @@ public class MainFragment extends Fragment implements View.OnClickListener{
 
         switch (v.getId()){
             case R.id.social_button:
-                SocialFragment socialFragment = new SocialFragment();
-                android.support.v4.app.FragmentTransaction socialFragmentTransaction =
-                        getFragmentManager().beginTransaction();
-                socialFragmentTransaction.replace(R.id.fragment_container, socialFragment)
-                        .addToBackStack(null)
-                        .commit();
+
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Please enter your phone number:");
+
+                // Set up the input
+                final EditText input = new EditText(getActivity());
+
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        MainActivity.m_Text  = input.getText().toString();
+
+                        SocialFragment socialFragment = new SocialFragment();
+                        android.support.v4.app.FragmentTransaction socialFragmentTransaction =
+                                getFragmentManager().beginTransaction();
+                        socialFragmentTransaction.replace(R.id.fragment_container, socialFragment)
+                                .addToBackStack(null)
+                                .commit();
+
+                    }
+                });
+
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+
+
                 break;
             case R.id.tasks_button:
                 TasksFragment tasksFragment = new TasksFragment();
