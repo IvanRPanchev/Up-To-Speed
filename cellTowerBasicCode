@@ -1,6 +1,8 @@
-// JAVA CODE 
-
+// MainActivity.java
 package com.example.electr0.firststeps;
+
+
+import android.app.Fragment;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -9,6 +11,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -18,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
@@ -38,33 +45,30 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     //from old project
     Context context;
-
-    private final int REQ_CODE_SPEECH_INPUT = 100;
-    private int port = 5500;
-    private TextView txtSpeechInput;
     private ImageButton btnSpeak;
-    private TextToSpeech tts;
     private Button toSpeechBtn;
 
-    // boolean exitThread=true;
-    String speakingWords = "Aloohaaa";
-    String voiceText = "temp";
+
     String quitCase = "exit";
 
 
     //to new project
-
+    private int port = 5503;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
     private TextView gsmInfoView;
-    private TextView serverInfoView;
+    private EditText userInput;
+    private Button sendToServer;
+    private Button showBtn;
+    private Button talkBtn;
+
+    private TextToSpeech tts;
+    String speakingWords = "Hello sir";
+    String phoneNum = "";
+    String[] jokes = new String[9];
+    String voiceText = "temp";
 
 
-    String gsmInfo = "";
-    String phoneNum = "0895772331";
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+    public static String[] responseNums = new String[10];
 
 
     @Override
@@ -72,124 +76,66 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        gsmInfoView = (TextView) findViewById(R.id.gsmInfo);
-        serverInfoView = (TextView) findViewById(R.id.serverInfo);
+        gsmInfoView = (TextView) findViewById(R.id.serverInfo);
+        userInput = (EditText) findViewById(R.id.etMsg);
+        sendToServer = (Button) findViewById(R.id.bSend);
+        showBtn = (Button) findViewById(R.id.bShow);
+        talkBtn = (Button) findViewById(R.id.bTalk);
+        tts = new TextToSpeech(this, this);
+
+        jokes[0] = "Boy: *calls 911* Hello? I need your help!\n" +
+                "                911: Alright, What is it?\n" +
+                "        Boy: Two girls are fighting over me!\n" +
+                "                911: So what's your emergency?\n" +
+                "        Boy: The ugly one is winning.";
+
+
+
 
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        GsmCellLocation cellLocation = (GsmCellLocation) telephonyManager.getCellLocation();
+        final GsmCellLocation cellLocation = (GsmCellLocation) telephonyManager.getCellLocation();
 
-        String IMEINumber = telephonyManager.getDeviceId();
-        String subscriberID = telephonyManager.getDeviceId();
-        String SIMSerialNumber = telephonyManager.getSimSerialNumber();
-        String networkCountryISO = telephonyManager.getNetworkCountryIso();
-        String SIMCountryISO = telephonyManager.getSimCountryIso();
-        String softwareVersion = telephonyManager.getDeviceSoftwareVersion();
-        String voiceMailNumber = telephonyManager.getVoiceMailNumber();
-        String number = telephonyManager.getLine1Number();
-        String operatoprName = telephonyManager.getNetworkOperatorName();
-        String MCC = telephonyManager.getNetworkOperator();
-        String strphoneType = "";
-        int cellid = cellLocation.getCid();
-        int lac = cellLocation.getLac();
-        int mcc = Integer.parseInt(MCC.substring(0, 3));
+        final int cellid = cellLocation.getCid();
+        //int lac = cellLocation.getLac();
 
 
-        int phoneType = telephonyManager.getPhoneType();
+        sendToServer.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
-        switch (phoneType) {
-            case (TelephonyManager.PHONE_TYPE_CDMA):
-                strphoneType = "CDMA";
-                break;
-            case (TelephonyManager.PHONE_TYPE_GSM):
-                strphoneType = "GSM";
-                break;
-            case (TelephonyManager.PHONE_TYPE_NONE):
-                strphoneType = "NONE";
-                break;
-        }
+                phoneNum = String.valueOf(userInput.getText());
+                Clients myClient = new Clients("192.168.0.102", port, gsmInfoView, String.valueOf(cellid), phoneNum);
+                myClient.execute();
 
+            }
+        });
 
-        String gsmInfo = "Phone Details:\n";
-        gsmInfo += "\n PhoneNumber:" + number;
-        gsmInfo += "\n Cell tower ID:" + cellid;
-        gsmInfo += "\n LAC :" + lac;
-        gsmInfo += "\n MCC:" + mcc;
-        gsmInfo += "\n Operator name:" + operatoprName;
-        gsmInfo += "\n IMEI Number:" + IMEINumber;
-        gsmInfo += "\n SubscriberID:" + subscriberID;
-        gsmInfo += "\n Sim Serial Number:" + SIMSerialNumber;
-        gsmInfo += "\n Network Country ISO:" + networkCountryISO;
-        gsmInfo += "\n SIM Country ISO:" + SIMCountryISO;
-        gsmInfo += "\n Software Version:" + softwareVersion;
-        gsmInfo += "\n Voice Mail Number:" + voiceMailNumber;
-        gsmInfo += "\n Phone Network Type:" + strphoneType;
+        showBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
-        gsmInfoView.setText(gsmInfo);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        Clients myClient = new Clients("192.168.0.102", port, serverInfoView, String.valueOf(cellid), phoneNum);
-        myClient.execute();
+                ContactsFragment fragment = new ContactsFragment();
+                fragmentTransaction.add(R.id.fragment_container, fragment);
+                fragmentTransaction.commit();
 
 
-        //from old project
 
-//        txtSpeechInput = ((TextView)findViewById(R.id.txtSpeechInput));
-//        btnSpeak = ((ImageButton)findViewById(R.id.btnSpeak));
-//        tts = new TextToSpeech(this, this);
-//        toSpeechBtn = ((Button)findViewById(R.id.toSpeech));
-//
-//        speakingWords = convo.getText().toString();
-//
-//
-//        toSpeechBtn.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View v)
-//            {
-//                speakingWords = convo.getText().toString();
-//                speakOut();
-//            }
-//        });
-//
-//
-//        btnSpeak.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View v)
-//            {
-//                promptSpeechInput();
-//            }
-//        });
-//
-//
-//        setVoiceTextBut.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View v)
-//            {
-//                message.setText(MainActivity.this.voiceText);
-//            }
-//        });
-//
-//
-//        sendToServBut.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View v)
-//            {
-//                status.setText("Try to connect... to port 5500");
-//
-//
-//                Clients myClient = new Clients("10.0.204.124", port, convo, 0);
-//                Worker goWork = new Worker(convo);
-//                goWork.run();
-//
-//            }
-//
-//        });
-//
-//        status.setText("Worker is working");
+            }
+        });
+
+        talkBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                promptSpeechInput();
+
+            }
+        });
 
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
     }
+
 
 
     //CONNECTION TO SERVER
@@ -203,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         TextView serverInfoView = null;
         String cellTowerID;
         String clientNum;
+
 
 
         Clients(String addr, int port, TextView serverInfoView, String cellTowerID, String clientNum) {
@@ -234,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 socketOut.println(cellTowerID);    // send tower id
                 socketOut.flush();
 
-
+                int i =0;
                 while (true) {
 
                     endCheck = socketIn.nextLine();
@@ -243,7 +190,15 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                         break;
                     }
 
-                    response += endCheck;
+
+                    if(!(endCheck.equals("There is nobody around you") || endCheck.equals("Friends list around you: "))){
+
+                        responseNums[i] = endCheck;
+                        i++;
+
+                    }
+
+                    response += "\n" + endCheck;
 
                 }
 
@@ -272,7 +227,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         @Override
         protected void onPostExecute(Void result) {
 
+
             serverInfoView.setText(response);
+
 
             super.onPostExecute(result);
 
@@ -281,12 +238,13 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     }
 
 
+
     //TEXT TO SPEECH
 
     private void speakOut() {
-        
+
         this.tts.speak(speakingWords, 0, null);
-        
+
     }
 
     @Override
@@ -302,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
             } else {
 
-                btnSpeak.setEnabled(true);
                 speakOut();
 
             }
@@ -321,6 +278,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
         super.onDestroy();
     }
+
+
 
 //     SPEECH TO TEXT
 
@@ -350,10 +309,23 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 if (resultCode == RESULT_OK && null != data) {
 
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    
-                    txtSpeechInput.setText(result.get(0));
+
                     voiceText = (result.get(0));
-                    
+                    if(voiceText.equalsIgnoreCase("give me a joke")){
+
+                        speakingWords = jokes[0];
+
+                        speakOut();
+
+                    }else{
+
+                        speakingWords = voiceText;
+
+                        speakOut();
+
+                    }
+
+
                 }
                 break;
             }
@@ -364,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
 
 }
+
 
 
 
@@ -380,39 +353,75 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.electr0.firststeps.MainActivity">
 
-    <TextView
-        android:id="@+id/cellidTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
 
     <TextView
-        android:id="@+id/lacTextView"
-        android:layout_marginTop="50dp"
+        android:id="@+id/gsmInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Enter number:" />
+
+    <EditText
+        android:id="@+id/etMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gsmInfo"
+        android:ems="10">
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/bSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etMsg"
+        android:layout_alignParentRight="true"
+        android:text="Send" />
+
+    <Button
+        android:id="@+id/bShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etMsg"
+        android:layout_toLeftOf="@id/bSend"
+        android:text="Show" />
+
+    <Button
+        android:id="@+id/bTalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etMsg"
+        android:layout_toLeftOf="@id/bShow"
+        android:text="Talk" />
 
     <TextView
-        android:id="@+id/mccTextView"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="16dp"
+        android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_below="@id/bSend"
+        android:text="Status:" />
+
+
 
     <TextView
-        android:id="@+id/oprTextView"
-        android:layout_marginTop="150dp"
+        android:layout_below="@id/status"
+        android:layout_marginTop="16dp"
+        android:id="@+id/serverInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="no server info " />
 
-    <TextView
-        android:id="@+id/neighboursTextView"
-        android:layout_marginTop="200dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+
+    <LinearLayout
+
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/serverInfo"
+        android:layout_marginTop="16dp"
+        android:id="@+id/fragment_container"
+
+        ></LinearLayout>
 
 
 
@@ -422,11 +431,14 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
 
 //MAINFEST CODE 
-
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.electr0.firststeps">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -437,13 +449,149 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="org.example.MY_ACTION_INTENT"/>
+                <action android:name="android.media.action.IMAGE_CAPTURE"/>
 
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.VOICE"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.media.action.STILL_IMAGE_CAMERA"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.VOICE"/>
+            </intent-filter>
         </activity>
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
+
+
+
+//ContactsFragment.java
+
+package com.example.electr0.firststeps;
+
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.ContactsContract.Contacts;
+import android.provider.Settings;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+
+public class ContactsFragment extends ListFragment implements LoaderCallbacks<Cursor> {
+
+    private CursorAdapter mAdapter;
+
+    String mSearchString = MainActivity.responseNums[0];
+
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // create adapter once
+        Context context = getActivity();
+        int layout = android.R.layout.simple_list_item_1;
+        Cursor c = null; // there is no cursor yet
+
+        int flags = 0; // no auto-requery! Loader requeries.
+
+        mAdapter = new SimpleCursorAdapter(context, layout, c, FROM, TO, flags);
+
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // each time we are started use our listadapter
+        setListAdapter(mAdapter);
+
+        // and tell loader manager to start loading
+        getLoaderManager().initLoader(0, null, this);
+
+
+    }
+
+
+    // columns requested from the database
+    private static final String[] PROJECTION = {
+            Contacts._ID, // _ID is always required
+            Contacts.DISPLAY_NAME_PRIMARY // that's what we want to display
+    };
+
+
+    // and name should be displayed in the text1 textview in item layout
+    private static final String[] FROM = { Contacts.DISPLAY_NAME_PRIMARY };
+    private static final int[] TO = { android.R.id.text1 };
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+
+        Uri contentUri = Uri.withAppendedPath(
+                Contacts.CONTENT_FILTER_URI,
+                Uri.encode(mSearchString));
+
+        return new CursorLoader(
+                getActivity(),
+                contentUri,
+                PROJECTION,
+                null,
+                null,
+                null
+        );
+    }
+
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // Once cursor is loaded, give it to adapter
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // on reset take any old cursor away
+        mAdapter.swapCursor(null);
+    }
+
+
+    @Override
+    public void onListItemClick(ListView l, View v, int pos, long id) {
+        super.onListItemClick(l, v, pos, id);
+
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mSearchString));
+
+        startActivity(intent);
+
+
+
+    }
+}
 
 
 
