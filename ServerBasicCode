@@ -1,5 +1,4 @@
 // Main Class 
-
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -10,7 +9,7 @@ public class SpeedServer {
 
         try
         {
-            ServerSocket sock = new ServerSocket(5500);
+            ServerSocket sock = new ServerSocket(5503);
             System.out.println("Socket 5500 is open");
 
             for (int i=0 ; i<50 ; i++)
@@ -168,9 +167,10 @@ public class ThreadHandler extends Thread {
 
                         for(int i = 0 ; i < tmpPhoneNums.size() ; i++){
 
-                            outp.println("Friend " + i+1 + " : " + tmpPhoneNums.get(i));
+                            outp.println(tmpPhoneNums.get(i));
 
                         }
+
                         outp.println("end");
                         outp.flush();
 
@@ -188,9 +188,7 @@ public class ThreadHandler extends Thread {
 
                     }
 
-
                 }
-
 
             }
 
